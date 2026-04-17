@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TimeHelper.Views.CountdownPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="倒计时">
+
+    <VerticalStackLayout Padding="24" Spacing="16">
+        <Label
+            Text="时间助手"
+            FontSize="28"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <Label
+            Text="倒计时页面"
+            FontSize="20"
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>
