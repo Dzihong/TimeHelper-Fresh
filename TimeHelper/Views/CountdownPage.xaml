@@ -3,18 +3,133 @@
     x:Class="TimeHelper.Views.CountdownPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:TimeHelper.Models"
     Title="倒计时">
 
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label
-            Text="时间助手"
-            FontSize="28"
-            FontAttributes="Bold"
-            HorizontalOptions="Center" />
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
 
-        <Label
-            Text="倒计时页面"
-            FontSize="20"
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+            <!-- 页面标题 -->
+            <Label
+                Text="时间助手"
+                FontSize="28"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="倒计时"
+                FontSize="20"
+                HorizontalOptions="Center" />
+
+            <!-- 输入倒计时时间 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="设置倒计时时间（分钟）" />
+
+                    <Entry
+                        x:Name="MinutesEntry"
+                        Placeholder="请输入分钟数"
+                        Keyboard="Numeric" />
+
+                    <Label
+                        x:Name="StatusLabel"
+                        Text="状态：准备就绪"
+                        FontAttributes="Italic" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 当前倒计时显示与控制按钮 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        x:Name="TimerLabel"
+                        Text="00:00"
+                        FontSize="42"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center" />
+
+                    <HorizontalStackLayout
+                        Spacing="10"
+                        HorizontalOptions="Center">
+
+                        <Button
+                            x:Name="StartButton"
+                            Text="开始"
+                            Clicked="OnStartClicked" />
+
+                        <Button
+                            x:Name="PauseButton"
+                            Text="暂停"
+                            Clicked="OnPauseClicked" />
+
+                        <Button
+                            x:Name="ResetButton"
+                            Text="重置"
+                            Clicked="OnResetClicked" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 保存方案 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        Text="保存当前方案"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <Entry
+                        x:Name="PlanNameEntry"
+                        Placeholder="请输入方案名称，例如：25分钟专注" />
+
+                    <Button
+                        Text="保存当前方案"
+                        Clicked="OnSavePlanClicked" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 已保存方案列表 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="已保存方案"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <CollectionView
+                        x:Name="PlansCollectionView"
+                        SelectionMode="None">
+
+                        <CollectionView.EmptyView>
+                            <Label Text="暂无方案" />
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:CountdownPlan">
+                                <Border StrokeThickness="1" Padding="12" Margin="0,0,0,10">
+                                    <VerticalStackLayout Spacing="8">
+
+                                        <Label
+                                            Text="{Binding Name}"
+                                            FontAttributes="Bold"
+                                            FontSize="16" />
+
+                                        <Label
+                                            Text="{Binding Minutes, StringFormat='时长：{0} 分钟'}" />
+
+                                        <Button
+                                            Text="使用此方案"
+                                            Clicked="OnUsePlanClicked"
+                                            CommandParameter="{Binding .}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

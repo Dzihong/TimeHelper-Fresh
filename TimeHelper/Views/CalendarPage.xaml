@@ -3,18 +3,106 @@
     x:Class="TimeHelper.Views.CalendarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="日历">
+    xmlns:models="clr-namespace:TimeHelper.Models"
+    Title="日历统计">
 
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label
-            Text="时间助手"
-            FontSize="28"
-            FontAttributes="Bold"
-            HorizontalOptions="Center" />
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
 
-        <Label
-            Text="日历页面"
-            FontSize="20"
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+            <!-- 页面标题 -->
+            <Label
+                Text="时间助手"
+                FontSize="28"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="日历统计"
+                FontSize="20"
+                HorizontalOptions="Center" />
+
+            <!-- 本月概览 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="本月概览"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <Label
+                        x:Name="MonthLabel"
+                        Text="月份：--"
+                        FontSize="16" />
+
+                    <Label
+                        x:Name="TotalCountLabel"
+                        Text="本月完成次数：0"
+                        FontSize="16" />
+
+                    <Label
+                        x:Name="TotalMinutesLabel"
+                        Text="本月累计分钟数：0"
+                        FontSize="16" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 每日统计列表 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="每日统计"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <CollectionView x:Name="DailySummaryCollectionView">
+                        <CollectionView.EmptyView>
+                            <Label Text="本月暂无倒计时记录" />
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DailyRecordSummary">
+                                <Border StrokeThickness="1" Padding="12" Margin="0,0,0,10">
+                                    <VerticalStackLayout Spacing="6">
+
+                                        <Label
+                                            Text="{Binding Date, StringFormat='日期：{0:yyyy-MM-dd}'}"
+                                            FontAttributes="Bold"
+                                            FontSize="16" />
+
+                                        <Label
+                                            Text="{Binding Count, StringFormat='完成次数：{0}'}" />
+
+                                        <Label
+                                            Text="{Binding TotalMinutes, StringFormat='累计分钟数：{0}'}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 后续导入导出功能区域占位 -->
+            <Border StrokeThickness="1" Padding="20">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="方案文件操作"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <Button
+                        Text="导出方案（下一步实现）"
+                        Clicked="OnExportPlansClicked" />
+
+                    <Button
+                        Text="导入方案（下一步实现）"
+                        Clicked="OnImportPlansClicked" />
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
