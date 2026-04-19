@@ -5,7 +5,6 @@ namespace TimeHelper.Views;
 
 /// <summary>
 /// 倒计时页面。
-/// 负责倒计时的启动、暂停、重置，以及方案和完成记录的保存。
 /// </summary>
 public partial class CountdownPage : ContentPage
 {
@@ -60,6 +59,7 @@ public partial class CountdownPage : ContentPage
             UpdateStatus("已结束");
 
             await SaveCompletionRecordAsync();
+            await DeviceService.TryVibrateAsync();
             await DisplayAlertAsync("时间助手", "倒计时结束。", "确定");
         }
     }
