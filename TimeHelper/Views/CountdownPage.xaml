@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:TimeHelper.Models"
-    Title="倒计时">
+    Title="倒计时"
+    BackgroundColor="White">
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="20">
@@ -14,32 +15,48 @@
                 Text="时间助手"
                 FontSize="28"
                 FontAttributes="Bold"
+                TextColor="Black"
                 HorizontalOptions="Center" />
 
             <Label
                 Text="倒计时"
                 FontSize="20"
+                TextColor="Black"
                 HorizontalOptions="Center" />
 
             <!-- 输入倒计时时间 -->
-            <Border StrokeThickness="1" Padding="20">
+            <Border
+                Stroke="Gray"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                Padding="20">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="设置倒计时时间（分钟）" />
+
+                    <Label
+                        Text="设置倒计时时间（分钟）"
+                        TextColor="Black" />
 
                     <Entry
                         x:Name="MinutesEntry"
                         Placeholder="请输入分钟数"
-                        Keyboard="Numeric" />
+                        Keyboard="Numeric"
+                        TextColor="Black"
+                        BackgroundColor="White" />
 
                     <Label
                         x:Name="StatusLabel"
                         Text="状态：准备就绪"
+                        TextColor="Black"
                         FontAttributes="Italic" />
                 </VerticalStackLayout>
             </Border>
 
             <!-- 当前倒计时显示与控制按钮 -->
-            <Border StrokeThickness="1" Padding="20">
+            <Border
+                Stroke="Gray"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                Padding="20">
                 <VerticalStackLayout Spacing="12">
 
                     <Label
@@ -47,6 +64,7 @@
                         Text="00:00"
                         FontSize="42"
                         FontAttributes="Bold"
+                        TextColor="Black"
                         HorizontalOptions="Center" />
 
                     <HorizontalStackLayout
@@ -72,16 +90,24 @@
             </Border>
 
             <!-- 保存方案 -->
-            <Border StrokeThickness="1" Padding="20">
+            <Border
+                Stroke="Gray"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                Padding="20">
                 <VerticalStackLayout Spacing="12">
+
                     <Label
                         Text="保存当前方案"
                         FontSize="18"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"
+                        TextColor="Black" />
 
                     <Entry
                         x:Name="PlanNameEntry"
-                        Placeholder="请输入方案名称，例如：25分钟专注" />
+                        Placeholder="请输入方案名称，例如：25分钟专注"
+                        TextColor="Black"
+                        BackgroundColor="White" />
 
                     <Button
                         Text="保存当前方案"
@@ -90,33 +116,48 @@
             </Border>
 
             <!-- 已保存方案列表 -->
-            <Border StrokeThickness="1" Padding="20">
+            <Border
+                Stroke="Gray"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                Padding="20">
                 <VerticalStackLayout Spacing="10">
+
                     <Label
                         Text="已保存方案"
                         FontSize="18"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"
+                        TextColor="Black" />
 
                     <CollectionView
                         x:Name="PlansCollectionView"
                         SelectionMode="None">
 
                         <CollectionView.EmptyView>
-                            <Label Text="暂无方案" />
+                            <Label
+                                Text="暂无方案"
+                                TextColor="Black" />
                         </CollectionView.EmptyView>
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:CountdownPlan">
-                                <Border StrokeThickness="1" Padding="12" Margin="0,0,0,10">
+                                <Border
+                                    Stroke="LightGray"
+                                    StrokeThickness="1"
+                                    BackgroundColor="White"
+                                    Padding="12"
+                                    Margin="0,0,0,10">
                                     <VerticalStackLayout Spacing="8">
 
                                         <Label
                                             Text="{Binding Name}"
                                             FontAttributes="Bold"
-                                            FontSize="16" />
+                                            FontSize="16"
+                                            TextColor="Black" />
 
                                         <Label
-                                            Text="{Binding Minutes, StringFormat='时长：{0} 分钟'}" />
+                                            Text="{Binding Minutes, StringFormat='时长：{0} 分钟'}"
+                                            TextColor="Black" />
 
                                         <Button
                                             Text="使用此方案"
