@@ -24,15 +24,7 @@ public partial class ProfilePage : ContentPage
     {
         UserNameEntry.Text = _profile.UserName;
         LifeGoalEditor.Text = _profile.LifeGoal;
-
-        if (_profile.ThemeMode == "PureBlack")
-        {
-            ThemePicker.SelectedIndex = 0;
-        }
-        else
-        {
-            ThemePicker.SelectedIndex = 1;
-        }
+        ThemePicker.SelectedIndex = _profile.ThemeMode == "PureBlack" ? 0 : 1;
 
         if (string.IsNullOrWhiteSpace(_profile.AlarmMusicPath))
         {
@@ -62,7 +54,7 @@ public partial class ProfilePage : ContentPage
         }
 
         await StorageService.SaveUserProfileAsync(_profile);
-        await DisplayAlert("保存成功", "用户设置已保存到本地。", "确定");
+        await DisplayAlertAsync("保存成功", "用户设置已保存到本地。", "确定");
     }
 
     private void OnThemeChanged(object? sender, EventArgs e)
@@ -103,11 +95,11 @@ public partial class ProfilePage : ContentPage
 
     private async void OnChooseAvatarClicked(object? sender, EventArgs e)
     {
-        await DisplayAlert("提示", "头像选择功能将在下一步实现。", "确定");
+        await DisplayAlertAsync("提示", "头像选择功能将在下一步实现。", "确定");
     }
 
     private async void OnChooseMusicClicked(object? sender, EventArgs e)
     {
-        await DisplayAlert("提示", "本地音乐导入功能将在下一步实现。", "确定");
+        await DisplayAlertAsync("提示", "本地音乐导入功能将在下一步实现。", "确定");
     }
 }

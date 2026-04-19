@@ -10,7 +10,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="20">
 
-            <!-- 页面标题 -->
             <Label
                 Text="时间助手"
                 FontSize="28"
@@ -24,7 +23,6 @@
                 TextColor="Black"
                 HorizontalOptions="Center" />
 
-            <!-- 输入倒计时时间 -->
             <Border
                 Stroke="Gray"
                 StrokeThickness="1"
@@ -51,7 +49,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- 当前倒计时显示与控制按钮 -->
             <Border
                 Stroke="Gray"
                 StrokeThickness="1"
@@ -89,7 +86,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- 保存方案 -->
             <Border
                 Stroke="Gray"
                 StrokeThickness="1"
@@ -115,7 +111,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- 已保存方案列表 -->
             <Border
                 Stroke="Gray"
                 StrokeThickness="1"

@@ -4,122 +4,88 @@ using TimeHelper.Models;
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 本地存储服务
-/// 负责保存和读取方案、记录、用户资料
+/// 本地存储服务。
+/// 负责保存和读取方案、记录以及用户资料。
 /// </summary>
 public static class StorageService
 {
-    // 方案文件路径
     private static readonly string PlansFilePath =
         Path.Combine(FileSystem.AppDataDirectory, "plans.json");
 
-    // 记录文件路径
     private static readonly string RecordsFilePath =
         Path.Combine(FileSystem.AppDataDirectory, "records.json");
 
-    // 用户资料文件路径
     private static readonly string UserProfileFilePath =
         Path.Combine(FileSystem.AppDataDirectory, "userprofile.json");
 
-    /// <summary>
-    /// 读取本地方案列表
-    /// </summary>
     public static async Task<List<CountdownPlan>> LoadPlansAsync()
     {
-        if (!File.Exists(PlansFilePath))
-        {
-            return new List<CountdownPlan>();
-        }
-
-        string json = await File.ReadAllTextAsync(PlansFilePath);
-
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return new List<CountdownPlan>();
-        }
-
-        return JsonSerializer.Deserialize<List<CountdownPlan>>(json)
-               ?? new List<CountdownPlan>();
+        return await LoadAsync(PlansFilePath, new List<CountdownPlan>());
     }
 
-    /// <summary>
-    /// 保存方案列表
-    /// </summary>
     public static async Task SavePlansAsync(List<CountdownPlan> plans)
     {
-        string json = JsonSerializer.Serialize(plans, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
-
-        await File.WriteAllTextAsync(PlansFilePath, json);
+        await SaveAsync(PlansFilePath, plans);
     }
 
-    /// <summary>
-    /// 读取本地倒计时记录
-    /// </summary>
     public static async Task<List<CountdownRecord>> LoadRecordsAsync()
     {
-        if (!File.Exists(RecordsFilePath))
-        {
-            return new List<CountdownRecord>();
-        }
-
-        string json = await File.ReadAllTextAsync(RecordsFilePath);
-
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return new List<CountdownRecord>();
-        }
-
-        return JsonSerializer.Deserialize<List<CountdownRecord>>(json)
-               ?? new List<CountdownRecord>();
+        return await LoadAsync(RecordsFilePath, new List<CountdownRecord>());
     }
 
-    /// <summary>
-    /// 保存倒计时记录
-    /// </summary>
     public static async Task SaveRecordsAsync(List<CountdownRecord> records)
     {
-        string json = JsonSerializer.Serialize(records, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
-
-        await File.WriteAllTextAsync(RecordsFilePath, json);
+        await SaveAsync(RecordsFilePath, records);
     }
 
-    /// <summary>
-    /// 读取用户资料
-    /// </summary>
     public static async Task<UserProfile> LoadUserProfileAsync()
     {
-        if (!File.Exists(UserProfileFilePath))
-        {
-            return new UserProfile();
-        }
-
-        string json = await File.ReadAllTextAsync(UserProfileFilePath);
-
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return new UserProfile();
-        }
-
-        return JsonSerializer.Deserialize<UserProfile>(json)
-               ?? new UserProfile();
+        return await LoadAsync(UserProfileFilePath, new UserProfile());
     }
 
-    /// <summary>
-    /// 保存用户资料
-    /// </summary>
     public static async Task SaveUserProfileAsync(UserProfile profile)
     {
-        string json = JsonSerializer.Serialize(profile, new JsonSerializerOptions
+        await SaveAsync(UserProfileFilePath, profile);
+    }
+
+    private static async Task<T> LoadAsync<T>(string filePath, T defaultValue)
+    {
+        if (!File.Exists(filePath))
+        {
+            return defaultValue;
+        }
+
+        try
+        {
+            string json = await File.ReadAllTextAsync(filePath);
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return defaultValue;
+            }
+
+            return JsonSerializer.Deserialize<T>(json) ?? defaultValue;
+        }
+        catch (JsonException)
+        {
+            return defaultValue;
+        }
+        catch (IOException)
+        {
+            return defaultValue;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return defaultValue;
+        }
+    }
+
+    private static async Task SaveAsync<T>(string filePath, T value)
+    {
+        string json = JsonSerializer.Serialize(value, new JsonSerializerOptions
         {
             WriteIndented = true
         });
 
-        await File.WriteAllTextAsync(UserProfileFilePath, json);
+        await File.WriteAllTextAsync(filePath, json);
     }
 }

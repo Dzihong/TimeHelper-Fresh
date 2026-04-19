@@ -4,12 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:TimeHelper.Models"
-    Title="日历统计">
+    Title="日历统计"
+    BackgroundColor="White">
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="20">
 
-            <!-- 页面标题 -->
             <Label
                 Text="时间助手"
                 FontSize="28"
@@ -21,7 +21,6 @@
                 FontSize="20"
                 HorizontalOptions="Center" />
 
-            <!-- 本月概览 -->
             <Border StrokeThickness="1" Padding="20">
                 <VerticalStackLayout Spacing="10">
 
@@ -32,7 +31,7 @@
 
                     <Label
                         x:Name="MonthLabel"
-                        Text="月份：--"
+                        Text="月份：-"
                         FontSize="16" />
 
                     <Label
@@ -47,7 +46,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- 每日统计列表 -->
             <Border StrokeThickness="1" Padding="20">
                 <VerticalStackLayout Spacing="10">
 
@@ -84,7 +82,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- 后续导入导出功能区域占位 -->
             <Border StrokeThickness="1" Padding="20">
                 <VerticalStackLayout Spacing="10">
 
