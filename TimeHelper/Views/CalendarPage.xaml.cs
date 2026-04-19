@@ -5,7 +5,6 @@ namespace TimeHelper.Views;
 
 /// <summary>
 /// 日历统计页面。
-/// 用于展示本月倒计时完成情况，以及按日期分组的统计结果。
 /// </summary>
 public partial class CalendarPage : ContentPage
 {
@@ -42,13 +41,13 @@ public partial class CalendarPage : ContentPage
 
         _dailySummaries = currentMonthRecords
             .GroupBy(r => r.CompletedAt.Date)
-            .Select(g => new DailyRecordSummary
+            .Select(group => new DailyRecordSummary
             {
-                Date = g.Key,
-                Count = g.Count(),
-                TotalMinutes = g.Sum(x => x.Minutes)
+                Date = group.Key,
+                Count = group.Count(),
+                TotalMinutes = group.Sum(item => item.Minutes)
             })
-            .OrderByDescending(x => x.Date)
+            .OrderByDescending(item => item.Date)
             .ToList();
 
         DailySummaryCollectionView.ItemsSource = null;
@@ -57,11 +56,49 @@ public partial class CalendarPage : ContentPage
 
     private async void OnExportPlansClicked(object? sender, EventArgs e)
     {
-        await DisplayAlertAsync("提示", "导出方案功能将在下一步实现。", "确定");
+        List<CountdownPlan> plans = await StorageService.LoadPlansAsync();
+        if (plans.Count == 0)
+        {
+            await DisplayAlertAsync("提示", "当前没有可导出的方案。", "确定");
+            return;
+        }
+
+        var result = await PlanFileService.ExportPlansAsync(plans);
+        await DisplayAlertAsync(result.Success ? "导出成功" : "导出失败", result.Message, "确定");
     }
 
     private async void OnImportPlansClicked(object? sender, EventArgs e)
     {
-        await DisplayAlertAsync("提示", "导入方案功能将在下一步实现。", "确定");
+        var result = await PlanFileService.ImportPlansAsync();
+        if (!result.Success)
+        {
+            await DisplayAlertAsync("导入结果", result.Message, "确定");
+            return;
+        }
+
+        List<CountdownPlan> existingPlans = await StorageService.LoadPlansAsync();
+        int importedCount = 0;
+        int skippedCount = 0;
+
+        foreach (CountdownPlan plan in result.Plans)
+        {
+            bool exists = existingPlans.Any(item =>
+                item.Name.Equals(plan.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (exists)
+            {
+                skippedCount++;
+                continue;
+            }
+
+            existingPlans.Add(plan);
+            importedCount++;
+        }
+
+        await StorageService.SavePlansAsync(existingPlans);
+        await DisplayAlertAsync(
+            "导入完成",
+            $"成功导入 {importedCount} 个方案，跳过 {skippedCount} 个重复方案。",
+            "确定");
     }
 }
