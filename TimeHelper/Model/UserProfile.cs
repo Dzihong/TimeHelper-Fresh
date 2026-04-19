@@ -1,8 +1,7 @@
 namespace TimeHelper.Models;
 
 /// <summary>
-/// 用户资料模型。
-/// 用于保存基础信息、主题模式和提醒音乐路径。
+/// 用户资料。
 /// </summary>
 public class UserProfile
 {
@@ -17,19 +16,17 @@ public class UserProfile
     public string LifeGoal { get; set; } = string.Empty;
 
     /// <summary>
-    /// 用户头像路径。
-    /// 当前版本暂仅保存路径。
+    /// 头像路径。
     /// </summary>
     public string AvatarPath { get; set; } = string.Empty;
 
     /// <summary>
-    /// 主题模式，可选值为 PureBlack 或 PureWhite。
+    /// 主题模式。
     /// </summary>
     public string ThemeMode { get; set; } = "PureWhite";
 
     /// <summary>
-    /// 倒计时结束提醒音乐路径。
-    /// 当前版本暂仅保存路径。
+    /// 提醒音乐路径。
     /// </summary>
     public string AlarmMusicPath { get; set; } = string.Empty;
 }

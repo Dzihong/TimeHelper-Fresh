@@ -4,8 +4,7 @@ using TimeHelper.Models;
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 本地存储服务。
-/// 负责保存和读取方案、记录以及用户资料。
+/// 应用内部本地存储。
 /// </summary>
 public static class StorageService
 {
@@ -18,34 +17,34 @@ public static class StorageService
     private static readonly string UserProfileFilePath =
         Path.Combine(FileSystem.AppDataDirectory, "userprofile.json");
 
-    public static async Task<List<CountdownPlan>> LoadPlansAsync()
+    public static Task<List<CountdownPlan>> LoadPlansAsync()
     {
-        return await LoadAsync(PlansFilePath, new List<CountdownPlan>());
+        return LoadAsync(PlansFilePath, new List<CountdownPlan>());
     }
 
-    public static async Task SavePlansAsync(List<CountdownPlan> plans)
+    public static Task SavePlansAsync(List<CountdownPlan> plans)
     {
-        await SaveAsync(PlansFilePath, plans);
+        return SaveAsync(PlansFilePath, plans);
     }
 
-    public static async Task<List<CountdownRecord>> LoadRecordsAsync()
+    public static Task<List<CountdownRecord>> LoadRecordsAsync()
     {
-        return await LoadAsync(RecordsFilePath, new List<CountdownRecord>());
+        return LoadAsync(RecordsFilePath, new List<CountdownRecord>());
     }
 
-    public static async Task SaveRecordsAsync(List<CountdownRecord> records)
+    public static Task SaveRecordsAsync(List<CountdownRecord> records)
     {
-        await SaveAsync(RecordsFilePath, records);
+        return SaveAsync(RecordsFilePath, records);
     }
 
-    public static async Task<UserProfile> LoadUserProfileAsync()
+    public static Task<UserProfile> LoadUserProfileAsync()
     {
-        return await LoadAsync(UserProfileFilePath, new UserProfile());
+        return LoadAsync(UserProfileFilePath, new UserProfile());
     }
 
-    public static async Task SaveUserProfileAsync(UserProfile profile)
+    public static Task SaveUserProfileAsync(UserProfile profile)
     {
-        await SaveAsync(UserProfileFilePath, profile);
+        return SaveAsync(UserProfileFilePath, profile);
     }
 
     private static async Task<T> LoadAsync<T>(string filePath, T defaultValue)

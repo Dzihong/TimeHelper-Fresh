@@ -44,7 +44,7 @@
                         HorizontalOptions="Center" />
 
                     <Button
-                        Text="选择头像（下一步实现）"
+                        Text="选择头像（暂未开放）"
                         Clicked="OnChooseAvatarClicked" />
                 </VerticalStackLayout>
             </Border>
@@ -132,7 +132,7 @@
                         TextColor="Black" />
 
                     <Button
-                        Text="导入本地音乐（下一步实现）"
+                        Text="导入本地音乐（暂未开放）"
                         Clicked="OnChooseMusicClicked" />
                 </VerticalStackLayout>
             </Border>

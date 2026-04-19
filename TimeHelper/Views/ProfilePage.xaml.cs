@@ -3,6 +3,9 @@ using TimeHelper.Services;
 
 namespace TimeHelper.Views;
 
+/// <summary>
+/// 用户设置页面。
+/// </summary>
 public partial class ProfilePage : ContentPage
 {
     private UserProfile _profile = new();
@@ -95,11 +98,11 @@ public partial class ProfilePage : ContentPage
 
     private async void OnChooseAvatarClicked(object? sender, EventArgs e)
     {
-        await DisplayAlertAsync("提示", "头像选择功能将在下一步实现。", "确定");
+        await DisplayAlertAsync("提示", "头像选择功能暂未开放。", "确定");
     }
 
     private async void OnChooseMusicClicked(object? sender, EventArgs e)
     {
-        await DisplayAlertAsync("提示", "本地音乐导入功能将在下一步实现。", "确定");
+        await DisplayAlertAsync("提示", "本地音乐导入功能暂未开放。", "确定");
     }
 }

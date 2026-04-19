@@ -14,66 +14,76 @@
                 Text="时间助手"
                 FontSize="28"
                 FontAttributes="Bold"
+                TextColor="Black"
                 HorizontalOptions="Center" />
 
             <Label
                 Text="日历统计"
                 FontSize="20"
+                TextColor="Black"
                 HorizontalOptions="Center" />
 
-            <Border StrokeThickness="1" Padding="20">
+            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="20">
                 <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="本月概览"
                         FontSize="18"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"
+                        TextColor="Black" />
 
                     <Label
                         x:Name="MonthLabel"
                         Text="月份：-"
-                        FontSize="16" />
+                        FontSize="16"
+                        TextColor="Black" />
 
                     <Label
                         x:Name="TotalCountLabel"
                         Text="本月完成次数：0"
-                        FontSize="16" />
+                        FontSize="16"
+                        TextColor="Black" />
 
                     <Label
                         x:Name="TotalMinutesLabel"
                         Text="本月累计分钟数：0"
-                        FontSize="16" />
+                        FontSize="16"
+                        TextColor="Black" />
                 </VerticalStackLayout>
             </Border>
 
-            <Border StrokeThickness="1" Padding="20">
+            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="20">
                 <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="每日统计"
                         FontSize="18"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"
+                        TextColor="Black" />
 
                     <CollectionView x:Name="DailySummaryCollectionView">
                         <CollectionView.EmptyView>
-                            <Label Text="本月暂无倒计时记录" />
+                            <Label Text="本月暂无倒计时记录" TextColor="Black" />
                         </CollectionView.EmptyView>
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:DailyRecordSummary">
-                                <Border StrokeThickness="1" Padding="12" Margin="0,0,0,10">
+                                <Border Stroke="LightGray" StrokeThickness="1" BackgroundColor="White" Padding="12" Margin="0,0,0,10">
                                     <VerticalStackLayout Spacing="6">
 
                                         <Label
                                             Text="{Binding Date, StringFormat='日期：{0:yyyy-MM-dd}'}"
                                             FontAttributes="Bold"
-                                            FontSize="16" />
+                                            FontSize="16"
+                                            TextColor="Black" />
 
                                         <Label
-                                            Text="{Binding Count, StringFormat='完成次数：{0}'}" />
+                                            Text="{Binding Count, StringFormat='完成次数：{0}'}"
+                                            TextColor="Black" />
 
                                         <Label
-                                            Text="{Binding TotalMinutes, StringFormat='累计分钟数：{0}'}" />
+                                            Text="{Binding TotalMinutes, StringFormat='累计分钟数：{0}'}"
+                                            TextColor="Black" />
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>
@@ -82,20 +92,21 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Border StrokeThickness="1" Padding="20">
+            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="20">
                 <VerticalStackLayout Spacing="10">
 
                     <Label
                         Text="方案文件操作"
                         FontSize="18"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"
+                        TextColor="Black" />
 
                     <Button
-                        Text="导出方案（下一步实现）"
+                        Text="导出方案 JSON"
                         Clicked="OnExportPlansClicked" />
 
                     <Button
-                        Text="导入方案（下一步实现）"
+                        Text="导入方案 JSON"
                         Clicked="OnImportPlansClicked" />
                 </VerticalStackLayout>
             </Border>
