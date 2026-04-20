@@ -4,7 +4,7 @@ using TimeHelper.Services;
 namespace TimeHelper.Views;
 
 /// <summary>
-/// 倒计时页面。
+/// 倒计时主页。
 /// </summary>
 public partial class CountdownPage : ContentPage
 {
@@ -15,6 +15,7 @@ public partial class CountdownPage : ContentPage
     private IDispatcherTimer? _timer;
     private List<CountdownPlan> _plans = new();
     private List<CountdownRecord> _records = new();
+    private UserProfile _profile = new();
     private string _selectedPlanName = string.Empty;
 
     public CountdownPage()
@@ -23,7 +24,7 @@ public partial class CountdownPage : ContentPage
 
         InitializeTimer();
         UpdateTimerDisplay();
-        UpdateStatus("准备就绪");
+        UpdateStatus("Ready");
     }
 
     protected override async void OnAppearing()
@@ -32,8 +33,10 @@ public partial class CountdownPage : ContentPage
 
         _plans = await StorageService.LoadPlansAsync();
         _records = await StorageService.LoadRecordsAsync();
+        _profile = await StorageService.LoadUserProfileAsync();
 
         RefreshPlansView();
+        UpdateAlarmLabel();
     }
 
     private void InitializeTimer()
@@ -56,16 +59,19 @@ public partial class CountdownPage : ContentPage
             StopTimer();
             _remainingTime = TimeSpan.Zero;
             UpdateTimerDisplay();
-            UpdateStatus("已结束");
+            UpdateStatus("Completed");
 
             await SaveCompletionRecordAsync();
             await DeviceService.TryVibrateAsync();
-            await DisplayAlertAsync("时间助手", "倒计时结束。", "确定");
+            await DeviceService.TryPlayAlarmAsync(_profile.AlarmMusicPath);
+            await DisplayAlertAsync("Timer Complete", "Your countdown has finished.", "OK");
         }
     }
 
     private async void OnStartClicked(object? sender, EventArgs e)
     {
+        await DeviceService.StopAlarmAsync();
+
         if (_isRunning)
         {
             return;
@@ -76,27 +82,31 @@ public partial class CountdownPage : ContentPage
             _timer?.Start();
             _isRunning = true;
             _isPaused = false;
-            UpdateStatus("运行中");
+            UpdateStatus("Running");
             return;
         }
 
         bool isValid = int.TryParse(MinutesEntry.Text, out int minutes);
         if (!isValid || minutes <= 0)
         {
-            await DisplayAlertAsync("输入无效", "请输入大于 0 的整数分钟数。", "确定");
+            await DisplayAlertAsync("Invalid Input", "Please enter a whole number greater than 0.", "OK");
             return;
         }
 
         _initialTime = TimeSpan.FromMinutes(minutes);
         _remainingTime = _initialTime;
-        _selectedPlanName = string.Empty;
+
+        if (_selectedPlanName == string.Empty || _initialTime.TotalMinutes != minutes)
+        {
+            _selectedPlanName = string.Empty;
+        }
 
         UpdateTimerDisplay();
 
         _timer?.Start();
         _isRunning = true;
         _isPaused = false;
-        UpdateStatus("运行中");
+        UpdateStatus("Running");
     }
 
     private void OnPauseClicked(object? sender, EventArgs e)
@@ -109,15 +119,16 @@ public partial class CountdownPage : ContentPage
         _timer?.Stop();
         _isRunning = false;
         _isPaused = true;
-        UpdateStatus("已暂停");
+        UpdateStatus("Paused");
     }
 
-    private void OnResetClicked(object? sender, EventArgs e)
+    private async void OnResetClicked(object? sender, EventArgs e)
     {
         StopTimer();
+        await DeviceService.StopAlarmAsync();
         _remainingTime = _initialTime;
         UpdateTimerDisplay();
-        UpdateStatus("准备就绪");
+        UpdateStatus("Ready");
     }
 
     private async void OnSavePlanClicked(object? sender, EventArgs e)
@@ -125,21 +136,21 @@ public partial class CountdownPage : ContentPage
         bool isValidMinutes = int.TryParse(MinutesEntry.Text, out int minutes);
         if (!isValidMinutes || minutes <= 0)
         {
-            await DisplayAlertAsync("无法保存", "请先输入有效的倒计时分钟数。", "确定");
+            await DisplayAlertAsync("Cannot Save", "Enter a valid countdown length first.", "OK");
             return;
         }
 
         string planName = PlanNameEntry.Text?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(planName))
         {
-            await DisplayAlertAsync("无法保存", "请输入方案名称。", "确定");
+            await DisplayAlertAsync("Cannot Save", "Please enter a plan name.", "OK");
             return;
         }
 
         bool alreadyExists = _plans.Any(p => p.Name.Equals(planName, StringComparison.OrdinalIgnoreCase));
         if (alreadyExists)
         {
-            await DisplayAlertAsync("无法保存", "已存在同名方案，请更换一个名称。", "确定");
+            await DisplayAlertAsync("Cannot Save", "A plan with this name already exists.", "OK");
             return;
         }
 
@@ -154,7 +165,7 @@ public partial class CountdownPage : ContentPage
         PlanNameEntry.Text = string.Empty;
         RefreshPlansView();
 
-        await DisplayAlertAsync("保存成功", "方案已保存到本地。", "确定");
+        await DisplayAlertAsync("Saved", "The plan was saved locally.", "OK");
     }
 
     private void OnUsePlanClicked(object? sender, EventArgs e)
@@ -164,13 +175,14 @@ public partial class CountdownPage : ContentPage
             return;
         }
 
+        StopTimer();
         MinutesEntry.Text = plan.Minutes.ToString();
         _initialTime = TimeSpan.FromMinutes(plan.Minutes);
         _remainingTime = _initialTime;
         _selectedPlanName = plan.Name;
 
         UpdateTimerDisplay();
-        UpdateStatus($"已选择方案：{plan.Name}");
+        UpdateStatus($"Plan loaded: {plan.Name}");
     }
 
     private async Task SaveCompletionRecordAsync()
@@ -208,7 +220,14 @@ public partial class CountdownPage : ContentPage
 
     private void UpdateStatus(string status)
     {
-        StatusLabel.Text = $"状态：{status}";
+        StatusLabel.Text = $"Status: {status}";
+    }
+
+    private void UpdateAlarmLabel()
+    {
+        AlarmPathLabel.Text = string.IsNullOrWhiteSpace(_profile.AlarmMusicPath)
+            ? "Alarm: Default vibration only"
+            : $"Alarm: {Path.GetFileName(_profile.AlarmMusicPath)}";
     }
 
     private void RefreshPlansView()

@@ -4,7 +4,7 @@ using TimeHelper.Services;
 namespace TimeHelper.Views;
 
 /// <summary>
-/// 用户设置页面。
+/// 用户设置页。
 /// </summary>
 public partial class ProfilePage : ContentPage
 {
@@ -27,20 +27,23 @@ public partial class ProfilePage : ContentPage
     {
         UserNameEntry.Text = _profile.UserName;
         LifeGoalEditor.Text = _profile.LifeGoal;
-        ThemePicker.SelectedIndex = _profile.ThemeMode == "PureBlack" ? 0 : 1;
+        ThemePicker.SelectedItem = _profile.ThemeMode;
 
-        if (string.IsNullOrWhiteSpace(_profile.AlarmMusicPath))
+        MusicPathLabel.Text = string.IsNullOrWhiteSpace(_profile.AlarmMusicPath)
+            ? "No MP3 alarm selected"
+            : $"Selected MP3: {Path.GetFileName(_profile.AlarmMusicPath)}";
+
+        AvatarPathLabel.Text = string.IsNullOrWhiteSpace(_profile.AvatarPath)
+            ? "No avatar selected"
+            : $"Selected image: {Path.GetFileName(_profile.AvatarPath)}";
+
+        if (!string.IsNullOrWhiteSpace(_profile.AvatarPath) && File.Exists(_profile.AvatarPath))
         {
-            MusicPathLabel.Text = "当前未选择本地音乐";
+            AvatarImage.Source = ImageSource.FromFile(_profile.AvatarPath);
         }
         else
         {
-            MusicPathLabel.Text = $"当前音乐：{_profile.AlarmMusicPath}";
-        }
-
-        if (!string.IsNullOrWhiteSpace(_profile.AvatarPath))
-        {
-            AvatarImage.Source = _profile.AvatarPath;
+            AvatarImage.Source = "dotnet_bot.png";
         }
 
         ApplyTheme(_profile.ThemeMode);
@@ -57,52 +60,49 @@ public partial class ProfilePage : ContentPage
         }
 
         await StorageService.SaveUserProfileAsync(_profile);
-        await DisplayAlertAsync("保存成功", "用户设置已保存到本地。", "确定");
+        ApplyTheme(_profile.ThemeMode);
+        await DisplayAlertAsync("Saved", "Your profile has been updated.", "OK");
     }
 
     private void OnThemeChanged(object? sender, EventArgs e)
     {
         if (ThemePicker.SelectedItem is string selectedTheme)
         {
+            _profile.ThemeMode = selectedTheme;
             ApplyTheme(selectedTheme);
         }
     }
 
     private void ApplyTheme(string themeMode)
     {
-        if (themeMode == "PureBlack")
-        {
-            BackgroundColor = Colors.Black;
-
-            UserNameEntry.TextColor = Colors.White;
-            UserNameEntry.BackgroundColor = Color.FromArgb("#222222");
-
-            LifeGoalEditor.TextColor = Colors.White;
-            LifeGoalEditor.BackgroundColor = Color.FromArgb("#222222");
-
-            MusicPathLabel.TextColor = Colors.White;
-        }
-        else
-        {
-            BackgroundColor = Colors.White;
-
-            UserNameEntry.TextColor = Colors.Black;
-            UserNameEntry.BackgroundColor = Colors.White;
-
-            LifeGoalEditor.TextColor = Colors.Black;
-            LifeGoalEditor.BackgroundColor = Colors.White;
-
-            MusicPathLabel.TextColor = Colors.Black;
-        }
+        Application.Current!.UserAppTheme = themeMode == "PureBlack" ? AppTheme.Dark : AppTheme.Light;
     }
 
     private async void OnChooseAvatarClicked(object? sender, EventArgs e)
     {
-        await DisplayAlertAsync("提示", "头像选择功能暂未开放。", "确定");
+        var result = await LocalFileService.PickAvatarAsync();
+        if (!result.Success)
+        {
+            await DisplayAlertAsync("Avatar", result.Message, "OK");
+            return;
+        }
+
+        _profile.AvatarPath = result.FilePath;
+        AvatarImage.Source = ImageSource.FromFile(result.FilePath);
+        AvatarPathLabel.Text = $"Selected image: {Path.GetFileName(result.FilePath)}";
     }
 
     private async void OnChooseMusicClicked(object? sender, EventArgs e)
     {
-        await DisplayAlertAsync("提示", "本地音乐导入功能暂未开放。", "确定");
+        var result = await LocalFileService.PickAlarmMusicAsync();
+        if (!result.Success)
+        {
+            await DisplayAlertAsync("Alarm Sound", result.Message, "OK");
+            return;
+        }
+
+        _profile.AlarmMusicPath = result.FilePath;
+        MusicPathLabel.Text = $"Selected MP3: {Path.GetFileName(result.FilePath)}";
+        await DisplayAlertAsync("Alarm Sound", "Your MP3 alarm file is ready to use.", "OK");
     }
 }

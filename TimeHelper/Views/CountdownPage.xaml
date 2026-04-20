@@ -4,125 +4,104 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:TimeHelper.Models"
-    Title="倒计时"
-    BackgroundColor="White">
+    Title="Timer">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="20">
+        <VerticalStackLayout Padding="24" Spacing="18">
 
             <Label
-                Text="时间助手"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="Black"
-                HorizontalOptions="Center" />
+                Style="{StaticResource PageHeadingStyle}"
+                Text="Focus Timer" />
 
             <Label
-                Text="倒计时"
-                FontSize="20"
-                TextColor="Black"
-                HorizontalOptions="Center" />
+                Style="{StaticResource MutedLabelStyle}"
+                HorizontalTextAlignment="Center"
+                Text="Build a session, save a plan, and let the timer handle the rest." />
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
+            <Border Padding="28">
+                <VerticalStackLayout Spacing="18">
 
                     <Label
-                        Text="设置倒计时时长（分钟）"
-                        TextColor="Black" />
-
-                    <Entry
-                        x:Name="MinutesEntry"
-                        Placeholder="请输入分钟数"
-                        Keyboard="Numeric"
-                        TextColor="Black"
-                        BackgroundColor="White" />
-
-                    <Label
-                        x:Name="StatusLabel"
-                        Text="状态：准备就绪"
-                        TextColor="Black"
-                        FontAttributes="Italic" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
+                        Style="{StaticResource MutedLabelStyle}"
+                        HorizontalTextAlignment="Center"
+                        Text="CURRENT CLOCK" />
 
                     <Label
                         x:Name="TimerLabel"
-                        Text="00:00"
-                        FontSize="42"
-                        FontAttributes="Bold"
-                        TextColor="Black"
-                        HorizontalOptions="Center" />
+                        Style="{StaticResource ClockStyle}"
+                        Text="00:00" />
 
-                    <HorizontalStackLayout
-                        Spacing="10"
-                        HorizontalOptions="Center">
+                    <Label
+                        x:Name="StatusLabel"
+                        HorizontalTextAlignment="Center"
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="Status: Ready" />
 
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                         <Button
                             x:Name="StartButton"
-                            Text="开始"
+                            Grid.Column="0"
+                            Text="Start"
                             Clicked="OnStartClicked" />
-
                         <Button
                             x:Name="PauseButton"
-                            Text="暂停"
+                            Grid.Column="1"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Text="Pause"
                             Clicked="OnPauseClicked" />
-
                         <Button
                             x:Name="ResetButton"
-                            Text="重置"
+                            Grid.Column="2"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Text="Reset"
                             Clicked="OnResetClicked" />
-                    </HorizontalStackLayout>
+                    </Grid>
                 </VerticalStackLayout>
             </Border>
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
+                    <Label
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Set Countdown" />
 
                     <Label
-                        Text="保存当前方案"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="Length in minutes" />
+
+                    <Entry
+                        x:Name="MinutesEntry"
+                        Keyboard="Numeric"
+                        Placeholder="Enter minutes" />
+
+                    <Label
+                        x:Name="AlarmPathLabel"
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="Alarm: Default vibration only" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
+                    <Label
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Save Current Plan" />
 
                     <Entry
                         x:Name="PlanNameEntry"
-                        Placeholder="请输入方案名称，例如：25分钟专注"
-                        TextColor="Black"
-                        BackgroundColor="White" />
+                        Placeholder="Example: Deep Work 25" />
 
                     <Button
-                        Text="保存当前方案"
+                        Text="Save Plan"
                         Clicked="OnSavePlanClicked" />
                 </VerticalStackLayout>
             </Border>
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="10">
-
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
                     <Label
-                        Text="已保存方案"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Saved Plans" />
 
                     <CollectionView
                         x:Name="PlansCollectionView"
@@ -130,35 +109,32 @@
 
                         <CollectionView.EmptyView>
                             <Label
-                                Text="暂无方案"
-                                TextColor="Black" />
+                                HorizontalTextAlignment="Center"
+                                Style="{StaticResource MutedLabelStyle}"
+                                Text="No saved plans yet." />
                         </CollectionView.EmptyView>
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:CountdownPlan">
-                                <Border
-                                    Stroke="LightGray"
-                                    StrokeThickness="1"
-                                    BackgroundColor="White"
-                                    Padding="12"
-                                    Margin="0,0,0,10">
-                                    <VerticalStackLayout Spacing="8">
-
-                                        <Label
-                                            Text="{Binding Name}"
-                                            FontAttributes="Bold"
-                                            FontSize="16"
-                                            TextColor="Black" />
-
-                                        <Label
-                                            Text="{Binding Minutes, StringFormat='时长：{0} 分钟'}"
-                                            TextColor="Black" />
+                                <Border Padding="18" Margin="0,0,0,12">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                        <VerticalStackLayout Spacing="4">
+                                            <Label
+                                                FontFamily="OpenSansSemibold"
+                                                FontSize="17"
+                                                Text="{Binding Name}" />
+                                            <Label
+                                                Style="{StaticResource MutedLabelStyle}"
+                                                Text="{Binding Minutes, StringFormat='Duration: {0} min'}" />
+                                        </VerticalStackLayout>
 
                                         <Button
-                                            Text="使用此方案"
+                                            Grid.Column="1"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Text="Use"
                                             Clicked="OnUsePlanClicked"
                                             CommandParameter="{Binding .}" />
-                                    </VerticalStackLayout>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>

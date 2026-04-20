@@ -4,7 +4,7 @@ using TimeHelper.Models;
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 方案文件导入导出服务。
+/// 负责方案的导入导出。
 /// </summary>
 public static class PlanFileService
 {
@@ -24,11 +24,11 @@ public static class PlanFileService
             });
 
             await File.WriteAllTextAsync(filePath, json);
-            return (true, $"方案已导出到：{filePath}");
+            return (true, $"Plans exported to {filePath}");
         }
         catch (Exception)
         {
-            return (false, "导出失败，请稍后重试。");
+            return (false, "Export failed. Please try again.");
         }
     }
 
@@ -38,7 +38,7 @@ public static class PlanFileService
         {
             PickOptions options = new()
             {
-                PickerTitle = "选择方案 JSON 文件",
+                PickerTitle = "Select a plan JSON file",
                 FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
                     { DevicePlatform.Android, new[] { "application/json", "text/json", "*/*" } },
@@ -51,7 +51,7 @@ public static class PlanFileService
             FileResult? result = await FilePicker.Default.PickAsync(options);
             if (result is null)
             {
-                return (false, "已取消导入。", new List<CountdownPlan>());
+                return (false, "Import cancelled.", new List<CountdownPlan>());
             }
 
             await using Stream stream = await result.OpenReadAsync();
@@ -59,7 +59,7 @@ public static class PlanFileService
 
             if (plans is null)
             {
-                return (false, "导入文件格式无效。", new List<CountdownPlan>());
+                return (false, "The selected file is not valid.", new List<CountdownPlan>());
             }
 
             List<CountdownPlan> validPlans = plans
@@ -68,18 +68,18 @@ public static class PlanFileService
 
             if (validPlans.Count == 0)
             {
-                return (false, "没有读取到有效方案。", new List<CountdownPlan>());
+                return (false, "No valid plans were found in this file.", new List<CountdownPlan>());
             }
 
-            return (true, "方案文件读取成功。", validPlans);
+            return (true, "Plans loaded successfully.", validPlans);
         }
         catch (JsonException)
         {
-            return (false, "导入文件不是有效的 JSON。", new List<CountdownPlan>());
+            return (false, "The selected file is not valid JSON.", new List<CountdownPlan>());
         }
         catch (Exception)
         {
-            return (false, "导入失败，请稍后重试。", new List<CountdownPlan>());
+            return (false, "Import failed. Please try again.", new List<CountdownPlan>());
         }
     }
 }

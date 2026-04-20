@@ -8,15 +8,15 @@
 
     <TabBar>
         <ShellContent
-            Title="倒计时"
+            Title="Timer"
             ContentTemplate="{DataTemplate views:CountdownPage}" />
 
         <ShellContent
-            Title="日历"
+            Title="Calendar"
             ContentTemplate="{DataTemplate views:CalendarPage}" />
 
         <ShellContent
-            Title="用户"
+            Title="Profile"
             ContentTemplate="{DataTemplate views:ProfilePage}" />
     </TabBar>
 

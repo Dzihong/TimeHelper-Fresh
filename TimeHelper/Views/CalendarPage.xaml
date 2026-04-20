@@ -3,110 +3,120 @@
     x:Class="TimeHelper.Views.CalendarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:models="clr-namespace:TimeHelper.Models"
-    Title="日历统计"
-    BackgroundColor="White">
+    Title="Calendar">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="20">
+        <VerticalStackLayout Padding="24" Spacing="18">
 
             <Label
-                Text="时间助手"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="Black"
-                HorizontalOptions="Center" />
+                Style="{StaticResource PageHeadingStyle}"
+                Text="Focus Calendar" />
 
             <Label
-                Text="日历统计"
-                FontSize="20"
-                TextColor="Black"
-                HorizontalOptions="Center" />
+                Style="{StaticResource MutedLabelStyle}"
+                HorizontalTextAlignment="Center"
+                Text="See your month at a glance and tap any day for a quick session breakdown." />
 
-            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="20">
-                <VerticalStackLayout Spacing="10">
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="16">
 
-                    <Label
-                        Text="本月概览"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                        <Button
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Text="&lt;"
+                            Clicked="OnPreviousMonthClicked" />
 
-                    <Label
-                        x:Name="MonthLabel"
-                        Text="月份："
-                        FontSize="16"
-                        TextColor="Black" />
+                        <Label
+                            x:Name="MonthLabel"
+                            Grid.Column="1"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="22"
+                            HorizontalTextAlignment="Center"
+                            Text="April 2026" />
 
-                    <Label
-                        x:Name="TotalCountLabel"
-                        Text="本月完成次数：0"
-                        FontSize="16"
-                        TextColor="Black" />
+                        <Button
+                            Grid.Column="2"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Text="&gt;"
+                            Clicked="OnNextMonthClicked" />
+                    </Grid>
 
-                    <Label
-                        x:Name="TotalMinutesLabel"
-                        Text="本月累计分钟数：0"
-                        FontSize="16"
-                        TextColor="Black" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border Grid.Column="0" Padding="18">
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    Style="{StaticResource MutedLabelStyle}"
+                                    Text="THIS MONTH" />
+                                <Label
+                                    x:Name="TotalCountLabel"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="28"
+                                    Text="0 sessions" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="1" Padding="18">
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    Style="{StaticResource MutedLabelStyle}"
+                                    Text="TOTAL MINUTES" />
+                                <Label
+                                    x:Name="TotalMinutesLabel"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="28"
+                                    Text="0 min" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*" ColumnSpacing="8">
+                        <Label Grid.Column="0" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Sun" />
+                        <Label Grid.Column="1" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Mon" />
+                        <Label Grid.Column="2" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Tue" />
+                        <Label Grid.Column="3" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Wed" />
+                        <Label Grid.Column="4" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Thu" />
+                        <Label Grid.Column="5" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Fri" />
+                        <Label Grid.Column="6" HorizontalTextAlignment="Center" Style="{StaticResource MutedLabelStyle}" Text="Sat" />
+                    </Grid>
+
+                    <Grid
+                        x:Name="CalendarGrid"
+                        ColumnDefinitions="*,*,*,*,*,*,*"
+                        ColumnSpacing="8"
+                        RowSpacing="8" />
                 </VerticalStackLayout>
             </Border>
 
-            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="20">
+            <Border Padding="24">
                 <VerticalStackLayout Spacing="10">
-
                     <Label
-                        Text="每日统计"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
-
-                    <CollectionView x:Name="DailySummaryCollectionView">
-                        <CollectionView.EmptyView>
-                            <Label Text="本月暂无倒计时记录" TextColor="Black" />
-                        </CollectionView.EmptyView>
-
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:DailyRecordSummary">
-                                <Border Stroke="LightGray" StrokeThickness="1" BackgroundColor="White" Padding="12" Margin="0,0,0,10">
-                                    <VerticalStackLayout Spacing="6">
-
-                                        <Label
-                                            Text="{Binding Date, StringFormat='日期：{0:yyyy-MM-dd}'}"
-                                            FontAttributes="Bold"
-                                            FontSize="16"
-                                            TextColor="Black" />
-
-                                        <Label
-                                            Text="{Binding Count, StringFormat='完成次数：{0}'}"
-                                            TextColor="Black" />
-
-                                        <Label
-                                            Text="{Binding TotalMinutes, StringFormat='累计分钟数：{0}'}"
-                                            TextColor="Black" />
-                                    </VerticalStackLayout>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Selected Day" />
+                    <Label
+                        x:Name="SelectedDayLabel"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="20"
+                        Text="Tap a day" />
+                    <Label
+                        x:Name="SelectedDaySummaryLabel"
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="Choose a date in the calendar to inspect its countdown usage." />
                 </VerticalStackLayout>
             </Border>
 
-            <Border Stroke="Gray" StrokeThickness="1" BackgroundColor="White" Padding="20">
-                <VerticalStackLayout Spacing="10">
-
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="12">
                     <Label
-                        Text="方案文件操作"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Plan Files" />
 
                     <Button
-                        Text="导出方案 JSON"
+                        Text="Export Plans JSON"
                         Clicked="OnExportPlansClicked" />
 
                     <Button
-                        Text="导入方案 JSON"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Text="Import Plans JSON"
                         Clicked="OnImportPlansClicked" />
                 </VerticalStackLayout>
             </Border>

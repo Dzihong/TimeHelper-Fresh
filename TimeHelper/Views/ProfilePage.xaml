@@ -4,141 +4,114 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
-    Title="用户"
-    BackgroundColor="White">
+    Title="Profile">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="20">
+        <VerticalStackLayout Padding="24" Spacing="18">
 
             <Label
-                Text="时间助手"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="Black"
-                HorizontalOptions="Center" />
+                Style="{StaticResource PageHeadingStyle}"
+                Text="Profile &amp; Theme" />
 
             <Label
-                Text="用户设置"
-                FontSize="20"
-                TextColor="Black"
-                HorizontalOptions="Center" />
+                Style="{StaticResource MutedLabelStyle}"
+                HorizontalTextAlignment="Center"
+                Text="Keep your profile tidy, choose the visual mode, and set your own MP3 alarm." />
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
-
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
                     <Label
-                        Text="头像设置"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Avatar" />
 
                     <Image
                         x:Name="AvatarImage"
                         Source="dotnet_bot.png"
-                        HeightRequest="100"
-                        WidthRequest="100"
+                        HeightRequest="104"
+                        WidthRequest="104"
                         HorizontalOptions="Center" />
 
+                    <Label
+                        x:Name="AvatarPathLabel"
+                        HorizontalTextAlignment="Center"
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="No avatar selected" />
+
                     <Button
-                        Text="选择头像（暂未开放）"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Text="Choose Avatar"
                         Clicked="OnChooseAvatarClicked" />
                 </VerticalStackLayout>
             </Border>
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
+                    <Label
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Profile Details" />
 
                     <Label
-                        Text="用户信息"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
-
-                    <Label
-                        Text="用户名"
-                        TextColor="Black" />
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="User name" />
 
                     <Entry
                         x:Name="UserNameEntry"
-                        Placeholder="请输入用户名"
-                        TextColor="Black"
-                        BackgroundColor="White" />
+                        Placeholder="Enter your name" />
 
                     <Label
-                        Text="当前生活目标"
-                        TextColor="Black" />
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="Current life goal" />
 
                     <Editor
                         x:Name="LifeGoalEditor"
-                        Placeholder="请输入你当前的生活目标"
-                        TextColor="Black"
-                        BackgroundColor="White"
                         AutoSize="TextChanges"
-                        HeightRequest="120" />
+                        HeightRequest="120"
+                        Placeholder="Write your current focus or goal" />
                 </VerticalStackLayout>
             </Border>
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
-
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
                     <Label
-                        Text="应用风格"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Theme Mode" />
 
                     <Picker
                         x:Name="ThemePicker"
-                        Title="请选择主题"
-                        HeightRequest="50"
-                        BackgroundColor="White"
+                        Title="Choose a mode"
                         SelectedIndexChanged="OnThemeChanged">
                         <Picker.Items>
-                            <sys:String>PureBlack</sys:String>
                             <sys:String>PureWhite</sys:String>
+                            <sys:String>PureBlack</sys:String>
                         </Picker.Items>
                     </Picker>
+
+                    <Label
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="Dark mode keeps every large surface in layered grey while text turns white for contrast." />
                 </VerticalStackLayout>
             </Border>
 
-            <Border
-                Stroke="Gray"
-                StrokeThickness="1"
-                BackgroundColor="White"
-                Padding="20">
-                <VerticalStackLayout Spacing="12">
-
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
                     <Label
-                        Text="倒计时结束音乐"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="Black" />
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Alarm Sound" />
 
                     <Label
                         x:Name="MusicPathLabel"
-                        Text="当前未选择本地音乐"
-                        TextColor="Black" />
+                        Style="{StaticResource MutedLabelStyle}"
+                        Text="No MP3 alarm selected" />
 
                     <Button
-                        Text="导入本地音乐（暂未开放）"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Text="Choose MP3 Alarm"
                         Clicked="OnChooseMusicClicked" />
                 </VerticalStackLayout>
             </Border>
 
             <Button
-                Text="保存用户设置"
+                Text="Save Profile"
                 Clicked="OnSaveProfileClicked" />
 
         </VerticalStackLayout>

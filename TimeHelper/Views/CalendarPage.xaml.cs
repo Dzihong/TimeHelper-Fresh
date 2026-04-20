@@ -1,15 +1,16 @@
+using Microsoft.Maui.Controls.Shapes;
 using TimeHelper.Models;
 using TimeHelper.Services;
 
 namespace TimeHelper.Views;
 
 /// <summary>
-/// 日历统计页面。
+/// 日历统计页。
 /// </summary>
 public partial class CalendarPage : ContentPage
 {
     private List<CountdownRecord> _records = new();
-    private List<DailyRecordSummary> _dailySummaries = new();
+    private DateTime _displayMonth = new(DateTime.Now.Year, DateTime.Now.Month, 1);
 
     public CalendarPage()
     {
@@ -21,37 +22,159 @@ public partial class CalendarPage : ContentPage
         base.OnAppearing();
 
         _records = await StorageService.LoadRecordsAsync();
+        RefreshCalendar();
+    }
+
+    private void RefreshCalendar()
+    {
         LoadCurrentMonthSummary();
+        BuildCalendar();
+        SelectedDayLabel.Text = "Tap a day";
+        SelectedDaySummaryLabel.Text = "Choose a date in the calendar to inspect its countdown usage.";
     }
 
     private void LoadCurrentMonthSummary()
     {
-        DateTime now = DateTime.Now;
-
-        var currentMonthRecords = _records
-            .Where(r => r.CompletedAt.Year == now.Year && r.CompletedAt.Month == now.Month)
+        var monthRecords = _records
+            .Where(r => r.CompletedAt.Year == _displayMonth.Year && r.CompletedAt.Month == _displayMonth.Month)
             .ToList();
 
-        int totalCount = currentMonthRecords.Count;
-        int totalMinutes = currentMonthRecords.Sum(r => r.Minutes);
+        MonthLabel.Text = _displayMonth.ToString("MMMM yyyy");
+        TotalCountLabel.Text = $"{monthRecords.Count} sessions";
+        TotalMinutesLabel.Text = $"{monthRecords.Sum(r => r.Minutes)} min";
+    }
 
-        MonthLabel.Text = $"月份：{now:yyyy年M月}";
-        TotalCountLabel.Text = $"本月完成次数：{totalCount}";
-        TotalMinutesLabel.Text = $"本月累计分钟数：{totalMinutes}";
+    private void BuildCalendar()
+    {
+        CalendarGrid.Children.Clear();
+        CalendarGrid.RowDefinitions.Clear();
 
-        _dailySummaries = currentMonthRecords
-            .GroupBy(r => r.CompletedAt.Date)
-            .Select(group => new DailyRecordSummary
-            {
-                Date = group.Key,
-                Count = group.Count(),
-                TotalMinutes = group.Sum(item => item.Minutes)
-            })
-            .OrderByDescending(item => item.Date)
-            .ToList();
+        DateTime firstDay = new(_displayMonth.Year, _displayMonth.Month, 1);
+        int daysInMonth = DateTime.DaysInMonth(_displayMonth.Year, _displayMonth.Month);
+        int startColumn = (int)firstDay.DayOfWeek;
+        int totalCells = startColumn + daysInMonth;
+        int totalRows = (int)Math.Ceiling(totalCells / 7d);
 
-        DailySummaryCollectionView.ItemsSource = null;
-        DailySummaryCollectionView.ItemsSource = _dailySummaries;
+        for (int row = 0; row < totalRows; row++)
+        {
+            CalendarGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        }
+
+        for (int day = 1; day <= daysInMonth; day++)
+        {
+            DateTime date = new(_displayMonth.Year, _displayMonth.Month, day);
+            int index = startColumn + day - 1;
+            int row = index / 7;
+            int column = index % 7;
+
+            var dayRecords = _records
+                .Where(r => r.CompletedAt.Date == date.Date)
+                .ToList();
+
+            Border dayCard = CreateDayCard(date, dayRecords);
+            Grid.SetRow(dayCard, row);
+            Grid.SetColumn(dayCard, column);
+            CalendarGrid.Children.Add(dayCard);
+        }
+    }
+
+    private Border CreateDayCard(DateTime date, List<CountdownRecord> dayRecords)
+    {
+        Border border = new()
+        {
+            Padding = 10,
+            StrokeShape = new RoundRectangle { CornerRadius = 18 },
+            BackgroundColor = GetDayColor(date, dayRecords.Count > 0)
+        };
+
+        VerticalStackLayout layout = new()
+        {
+            Spacing = 4
+        };
+
+        layout.Children.Add(new Label
+        {
+            Text = date.Day.ToString(),
+            FontFamily = "OpenSansSemibold",
+            FontSize = 18,
+            HorizontalTextAlignment = TextAlignment.Center,
+            TextColor = GetThemeColor("TextLight", "TextDark")
+        });
+
+        layout.Children.Add(new Label
+        {
+            Text = dayRecords.Count == 0 ? "No use" : $"{dayRecords.Count} session(s)",
+            FontSize = 11,
+            HorizontalTextAlignment = TextAlignment.Center,
+            TextColor = GetThemeColor("MutedLight", "MutedDark")
+        });
+
+        border.Content = layout;
+
+        TapGestureRecognizer tapGesture = new();
+        tapGesture.Tapped += async (_, _) => await OnDayTappedAsync(date, dayRecords);
+        border.GestureRecognizers.Add(tapGesture);
+
+        return border;
+    }
+
+    private Color GetDayColor(DateTime date, bool hasRecords)
+    {
+        if (date.Date == DateTime.Today)
+        {
+            return GetThemeColor("CalendarTodayLight", "CalendarTodayDark");
+        }
+
+        if (hasRecords)
+        {
+            return GetThemeColor("CalendarBusyLight", "CalendarBusyDark");
+        }
+
+        return GetThemeColor("CalendarIdleLight", "CalendarIdleDark");
+    }
+
+    private Color GetThemeColor(string lightKey, string darkKey)
+    {
+        bool isDark = Application.Current?.UserAppTheme == AppTheme.Dark;
+        string key = isDark ? darkKey : lightKey;
+        return (Color)Application.Current!.Resources[key];
+    }
+
+    private async Task OnDayTappedAsync(DateTime date, List<CountdownRecord> dayRecords)
+    {
+        SelectedDayLabel.Text = date.ToString("dddd, MMM dd");
+
+        if (dayRecords.Count == 0)
+        {
+            SelectedDaySummaryLabel.Text = "No countdown activity was recorded on this day.";
+            await DisplayAlertAsync("Day Details", $"{date:dddd, MMM dd}\n\nNo countdown sessions were recorded.", "OK");
+            return;
+        }
+
+        int totalMinutes = dayRecords.Sum(r => r.Minutes);
+        string details = string.Join(
+            Environment.NewLine,
+            dayRecords.Select(r =>
+                $"- {(string.IsNullOrWhiteSpace(r.PlanName) ? "Quick timer" : r.PlanName)} | {r.Minutes} min | {r.CompletedAt:HH:mm}"));
+
+        SelectedDaySummaryLabel.Text = $"{dayRecords.Count} session(s), {totalMinutes} min total";
+
+        await DisplayAlertAsync(
+            "Day Details",
+            $"{date:dddd, MMM dd}\n\nSessions: {dayRecords.Count}\nTotal Minutes: {totalMinutes}\n\n{details}",
+            "OK");
+    }
+
+    private void OnPreviousMonthClicked(object? sender, EventArgs e)
+    {
+        _displayMonth = _displayMonth.AddMonths(-1);
+        RefreshCalendar();
+    }
+
+    private void OnNextMonthClicked(object? sender, EventArgs e)
+    {
+        _displayMonth = _displayMonth.AddMonths(1);
+        RefreshCalendar();
     }
 
     private async void OnExportPlansClicked(object? sender, EventArgs e)
@@ -59,12 +182,12 @@ public partial class CalendarPage : ContentPage
         List<CountdownPlan> plans = await StorageService.LoadPlansAsync();
         if (plans.Count == 0)
         {
-            await DisplayAlertAsync("提示", "当前没有可导出的方案。", "确定");
+            await DisplayAlertAsync("Nothing to Export", "There are no saved plans yet.", "OK");
             return;
         }
 
         var result = await PlanFileService.ExportPlansAsync(plans);
-        await DisplayAlertAsync(result.Success ? "导出成功" : "导出失败", result.Message, "确定");
+        await DisplayAlertAsync(result.Success ? "Export Complete" : "Export Failed", result.Message, "OK");
     }
 
     private async void OnImportPlansClicked(object? sender, EventArgs e)
@@ -72,7 +195,7 @@ public partial class CalendarPage : ContentPage
         var result = await PlanFileService.ImportPlansAsync();
         if (!result.Success)
         {
-            await DisplayAlertAsync("导入结果", result.Message, "确定");
+            await DisplayAlertAsync("Import Result", result.Message, "OK");
             return;
         }
 
@@ -97,8 +220,8 @@ public partial class CalendarPage : ContentPage
 
         await StorageService.SavePlansAsync(existingPlans);
         await DisplayAlertAsync(
-            "导入完成",
-            $"成功导入 {importedCount} 个方案，跳过 {skippedCount} 个重复方案。",
-            "确定");
+            "Import Complete",
+            $"Imported {importedCount} plan(s) and skipped {skippedCount} duplicate plan(s).",
+            "OK");
     }
 }
