@@ -31,7 +31,7 @@
                 <VerticalStackLayout Spacing="12">
 
                     <Label
-                        Text="设置倒计时时间（分钟）"
+                        Text="设置倒计时时长（分钟）"
                         TextColor="Black" />
 
                     <Entry

@@ -34,7 +34,7 @@
 
                     <Label
                         x:Name="MonthLabel"
-                        Text="月份：-"
+                        Text="月份："
                         FontSize="16"
                         TextColor="Black" />
 
