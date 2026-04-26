@@ -62,7 +62,16 @@ public partial class CountdownPage : ContentPage
             UpdateStatus("Completed");
 
             await SaveCompletionRecordAsync();
-            await DeviceService.TryVibrateAsync();
+            if (_profile.IsVibrationEnabled)
+            {
+                await DeviceService.TryVibrateAsync();
+            }
+
+            if (_profile.IsFlashEnabled)
+            {
+                await DeviceService.TryFlashAsync();
+            }
+
             await DeviceService.TryPlayAlarmAsync(_profile.AlarmMusicPath);
             await DisplayAlertAsync("Timer Complete", "Your countdown has finished.", "OK");
         }

@@ -4,6 +4,8 @@ using AndroidMediaPlayer = Android.Media.MediaPlayer;
 using Windows.Media.Core;
 using WindowsMediaPlayer = Windows.Media.Playback.MediaPlayer;
 #endif
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices;
 
 namespace TimeHelper.Services;
 
@@ -32,6 +34,32 @@ public static class DeviceService
         }
 
         return Task.CompletedTask;
+    }
+
+    public static async Task TryFlashAsync()
+    {
+        try
+        {
+            await Flashlight.Default.TurnOnAsync();
+            await Task.Delay(700);
+            await Flashlight.Default.TurnOffAsync();
+        }
+        catch (FeatureNotSupportedException)
+        {
+        }
+        catch (PermissionException)
+        {
+        }
+        catch (Exception)
+        {
+            try
+            {
+                await Flashlight.Default.TurnOffAsync();
+            }
+            catch (Exception)
+            {
+            }
+        }
     }
 
     public static Task TryPlayAlarmAsync(string filePath)

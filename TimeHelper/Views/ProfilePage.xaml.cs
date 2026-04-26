@@ -28,6 +28,8 @@ public partial class ProfilePage : ContentPage
         UserNameEntry.Text = _profile.UserName;
         LifeGoalEditor.Text = _profile.LifeGoal;
         ThemePicker.SelectedItem = _profile.ThemeMode;
+        VibrationSwitch.IsToggled = _profile.IsVibrationEnabled;
+        FlashSwitch.IsToggled = _profile.IsFlashEnabled;
 
         MusicPathLabel.Text = string.IsNullOrWhiteSpace(_profile.AlarmMusicPath)
             ? "No MP3 alarm selected"
@@ -58,6 +60,9 @@ public partial class ProfilePage : ContentPage
         {
             _profile.ThemeMode = selectedTheme;
         }
+
+        _profile.IsVibrationEnabled = VibrationSwitch.IsToggled;
+        _profile.IsFlashEnabled = FlashSwitch.IsToggled;
 
         await StorageService.SaveUserProfileAsync(_profile);
         ApplyTheme(_profile.ThemeMode);

@@ -29,4 +29,14 @@ public class UserProfile
     /// Alarm path.
     /// </summary>
     public string AlarmMusicPath { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Vibration switch.
+    /// </summary>
+    public bool IsVibrationEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Flash switch.
+    /// </summary>
+    public bool IsFlashEnabled { get; set; } = true;
 }

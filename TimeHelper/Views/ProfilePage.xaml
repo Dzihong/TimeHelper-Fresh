@@ -110,6 +110,46 @@
                 </VerticalStackLayout>
             </Border>
 
+            <Border Padding="24">
+                <VerticalStackLayout Spacing="14">
+                    <Label
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Timer Alerts" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontFamily="OpenSansSemibold"
+                                Text="Vibration" />
+                            <Label
+                                Style="{StaticResource MutedLabelStyle}"
+                                Text="Vibrate when the countdown ends." />
+                        </VerticalStackLayout>
+
+                        <Switch
+                            x:Name="VibrationSwitch"
+                            Grid.Column="1"
+                            IsToggled="True" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontFamily="OpenSansSemibold"
+                                Text="Flashlight" />
+                            <Label
+                                Style="{StaticResource MutedLabelStyle}"
+                                Text="Flash briefly when the device supports it." />
+                        </VerticalStackLayout>
+
+                        <Switch
+                            x:Name="FlashSwitch"
+                            Grid.Column="1"
+                            IsToggled="True" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
             <Button
                 Text="Save Profile"
                 Clicked="OnSaveProfileClicked" />
