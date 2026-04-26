@@ -4,7 +4,7 @@ using TimeHelper.Models;
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 负责应用内部 JSON 存储。
+/// App storage.
 /// </summary>
 public static class StorageService
 {

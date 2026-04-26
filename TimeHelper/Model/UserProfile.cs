@@ -1,32 +1,32 @@
 namespace TimeHelper.Models;
 
 /// <summary>
-/// 用户资料。
+/// User profile.
 /// </summary>
 public class UserProfile
 {
     /// <summary>
-    /// 用户名。
+    /// User name.
     /// </summary>
     public string UserName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 当前生活目标。
+    /// Life goal.
     /// </summary>
     public string LifeGoal { get; set; } = string.Empty;
 
     /// <summary>
-    /// 头像路径。
+    /// Avatar path.
     /// </summary>
     public string AvatarPath { get; set; } = string.Empty;
 
     /// <summary>
-    /// 主题模式。
+    /// Theme mode.
     /// </summary>
     public string ThemeMode { get; set; } = "PureWhite";
 
     /// <summary>
-    /// 提醒音乐路径。
+    /// Alarm path.
     /// </summary>
     public string AlarmMusicPath { get; set; } = string.Empty;
 }

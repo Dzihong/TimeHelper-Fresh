@@ -4,7 +4,7 @@ using TimeHelper.Services;
 namespace TimeHelper.Views;
 
 /// <summary>
-/// 用户设置页。
+/// Profile page.
 /// </summary>
 public partial class ProfilePage : ContentPage
 {

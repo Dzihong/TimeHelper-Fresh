@@ -5,7 +5,7 @@ using TimeHelper.Services;
 namespace TimeHelper.Views;
 
 /// <summary>
-/// 日历统计页。
+/// Calendar page.
 /// </summary>
 public partial class CalendarPage : ContentPage
 {

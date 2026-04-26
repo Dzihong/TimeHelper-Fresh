@@ -1,17 +1,17 @@
 namespace TimeHelper.Models;
 
 /// <summary>
-/// 倒计时方案。
+/// Timer plan.
 /// </summary>
 public class CountdownPlan
 {
     /// <summary>
-    /// 方案名称。
+    /// Plan name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// 倒计时分钟数。
+    /// Minutes.
     /// </summary>
     public int Minutes { get; set; }
 }

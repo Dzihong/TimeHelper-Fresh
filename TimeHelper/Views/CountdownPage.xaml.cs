@@ -4,7 +4,7 @@ using TimeHelper.Services;
 namespace TimeHelper.Views;
 
 /// <summary>
-/// 倒计时主页。
+/// Timer page.
 /// </summary>
 public partial class CountdownPage : ContentPage
 {

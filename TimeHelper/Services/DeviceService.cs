@@ -1,16 +1,21 @@
 ﻿#if ANDROID
-using Android.Media;
+using AndroidMediaPlayer = Android.Media.MediaPlayer;
+#elif WINDOWS
+using Windows.Media.Core;
+using WindowsMediaPlayer = Windows.Media.Playback.MediaPlayer;
 #endif
 
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 负责设备原生能力。
+/// Device tools.
 /// </summary>
 public static class DeviceService
 {
 #if ANDROID
-    private static MediaPlayer? _mediaPlayer;
+    private static AndroidMediaPlayer? _mediaPlayer;
+#elif WINDOWS
+    private static WindowsMediaPlayer? _mediaPlayer;
 #endif
 
     public static Task TryVibrateAsync()
@@ -42,10 +47,25 @@ public static class DeviceService
             _mediaPlayer?.Stop();
             _mediaPlayer?.Release();
 
-            _mediaPlayer = new MediaPlayer();
+            _mediaPlayer = new AndroidMediaPlayer();
             _mediaPlayer.SetDataSource(filePath);
             _mediaPlayer.Prepare();
             _mediaPlayer.Start();
+        }
+        catch (Exception)
+        {
+        }
+#elif WINDOWS
+        try
+        {
+            _mediaPlayer?.Pause();
+            _mediaPlayer?.Dispose();
+
+            _mediaPlayer = new WindowsMediaPlayer
+            {
+                Source = MediaSource.CreateFromUri(new Uri(filePath))
+            };
+            _mediaPlayer.Play();
         }
         catch (Exception)
         {
@@ -62,6 +82,16 @@ public static class DeviceService
         {
             _mediaPlayer?.Stop();
             _mediaPlayer?.Release();
+            _mediaPlayer = null;
+        }
+        catch (Exception)
+        {
+        }
+#elif WINDOWS
+        try
+        {
+            _mediaPlayer?.Pause();
+            _mediaPlayer?.Dispose();
             _mediaPlayer = null;
         }
         catch (Exception)

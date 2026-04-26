@@ -3,7 +3,7 @@ using TimeHelper.Models;
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 负责用户本地文件选择。
+/// Local files.
 /// </summary>
 public static class LocalFileService
 {

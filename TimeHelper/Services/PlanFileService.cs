@@ -4,7 +4,7 @@ using TimeHelper.Models;
 namespace TimeHelper.Services;
 
 /// <summary>
-/// 负责方案的导入导出。
+/// Plan files.
 /// </summary>
 public static class PlanFileService
 {

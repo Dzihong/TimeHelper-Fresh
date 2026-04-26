@@ -1,22 +1,22 @@
 namespace TimeHelper.Models;
 
 /// <summary>
-/// 每日统计摘要。
+/// Day summary.
 /// </summary>
 public class DailyRecordSummary
 {
     /// <summary>
-    /// 日期。
+    /// Date.
     /// </summary>
     public DateTime Date { get; set; }
 
     /// <summary>
-    /// 完成次数。
+    /// Count.
     /// </summary>
     public int Count { get; set; }
 
     /// <summary>
-    /// 累计分钟数。
+    /// Total minutes.
     /// </summary>
     public int TotalMinutes { get; set; }
 }
